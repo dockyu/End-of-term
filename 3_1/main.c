@@ -1,31 +1,32 @@
 #include <stdio.h>
 
-int __fls(unsigned int x)
+int fls_branchless(unsigned int x)
 {
 	int r = 32;
+    int shift;
 
 	if (!x)
 		return 0;
-	if (!(x & 0xffff0000u)) {
-		x <<= 16;
-		r -= 16;
-	}
-	if (!(x & 0xff000000u)) {
-		x <<= 8;
-		r -= 8;
-	}
-	if (!(x & 0xf0000000u)) {
-		x <<= 4;
-		r -= 4;
-	}
-	if (!(x & 0xc0000000u)) {
-		x <<= 2;
-		r -= 2;
-	}
-	if (!(x & 0x80000000u)) {
-		x <<= 1;
-		r -= 1;
-	}
+    shift = ((x & 0xffff0000u) == 0) << 4; /* 16 */
+    x <<= shift;
+    r -= shift;
+
+    shift = ((x & 0xff000000u) == 0) << 3; /* 8 */
+    x <<= shift;
+    r -= shift;
+
+    shift = ((x & 0xf0000000u) == 0) << 2; /* 4 */
+    x <<= shift;
+    r -= shift;
+
+    shift = ((x & 0xc0000000u) == 0) << 1; /* 2 */
+    x <<= shift;
+    r -= shift;
+
+    shift = ((x & 0x80000000u) == 0); /* 1 */
+    x <<= shift;
+    r -= shift;
+	
 	return r;
 }
 
@@ -35,7 +36,7 @@ int i_sqrt(int x)
         return x;
 
     int c = 0;
-    for (int d = 1UL << ((__fls(x)) & ~1UL); d; d >>= 2) {
+    for (int d = 1UL << ((fls_branchless(x)) & ~1UL); d; d >>= 2) {
         int y = c + d;
         c >>= 1;
         if (x >= y)
@@ -45,7 +46,9 @@ int i_sqrt(int x)
 }
 
 int main() {
-    int number = 10;
-    printf("i_sqrt(%d) : %d\n", number, i_sqrt(number));
+    for (int number = 1; number <= 20; number++) {
+        printf("i_sqrt(%d) : %d\n", number, i_sqrt(number));
+    }
+    
     return 0;
 }
