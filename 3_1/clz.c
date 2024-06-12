@@ -6,7 +6,6 @@ int i_sqrt(int x)
 
     printf("x : %d\n", x);
     printf("__builtin_clz(x) : %d\n", __builtin_clz(x));
-    
     printf("d : %d\n", d);
 
     return 0;

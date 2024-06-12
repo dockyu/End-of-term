@@ -10,10 +10,15 @@ all: $(TARGET)
 $(TARGET): main.c
 	$(CC) $(CFLAGS) $< -o $@
 
-test: test.c
+test: fls clz
+	./fls
+	rm -f clz fls
+
+clz: clz.c
 	$(CC) $(CFLAGS) $< -o $@
-	./test
-	rm -rf test
+
+fls: fls.c
+	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET) clz fls

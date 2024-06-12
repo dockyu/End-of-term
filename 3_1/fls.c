@@ -29,23 +29,13 @@ int __fls(unsigned int x)
 	return r;
 }
 
-int i_sqrt(int x)
+int main()
 {
-    if (x <= 1) /* Assume x is always positive */
-        return x;
-
-    int c = 0;
-    for (int d = 1UL << ((__fls(x)) & ~1UL); d; d >>= 2) {
-        int y = c + d;
-        c >>= 1;
-        if (x >= y)
-            x -= y, c += d;               
+    for (int number = 1; number <= 20; number++) {
+        printf("number : %d\n", number);
+        
+        printf("%d\n", __fls(number));
     }
-    return c;
-}
-
-int main() {
-    int number = 10;
-    printf("i_sqrt(%d) : %d\n", number, i_sqrt(number));
+    
     return 0;
 }
